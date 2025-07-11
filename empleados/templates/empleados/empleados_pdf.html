@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de empleados</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 30px;
+            color: #333;
+        }
+        header {
+            border-bottom: 3px solid #007BFF;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header img {
+            height: 50px;
+        }
+        header .info {
+            text-align: right;
+        }
+        h1 {
+            text-align: center;
+            color: #007BFF;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 6px;
+        }
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="https://dummyimage.com/120x50/007BFF/ffffff&text=LOGO" alt="Logo">
+        <div class="info">
+            <div><strong>Empresa:</strong> {{ empresa }}</div>
+            <div><strong>Fecha:</strong> {{ fecha }}</div>
+        </div>
+    </header>
+
+    <h1>Listado de Empleados</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre completo</th>
+                <th>Departamento</th>
+                <th>Puesto</th>
+                <th>Activo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in empleados %}
+            <tr>
+                <td>{{ e.id }}</td>
+                <td>{{ e.nombres }} {{ e.apellido_paterno }} {{ e.apellido_materno }}</td>
+                <td>{{ e.departamento }}</td>
+                <td>{{ e.puesto }}</td>
+                <td>
+                    {% if e.activo %}
+                        Sí
+                    {% else %}
+                        No
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <footer>
+        Reporte generado automáticamente por el Sistema de Recursos Humanos
+    </footer>
+</body>
+</html>

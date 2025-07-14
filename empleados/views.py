@@ -68,19 +68,28 @@ class EmpleadoRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView
         return [IsAuthenticated()]
 
     def perform_update(self, serializer):
-        empleado_anterior = Empleado.objects.get(pk=self.get_object().pk)
+        instance = self.get_object()
+        anterior_activo = instance.activo
         empleado = serializer.save()
         empleado._request_user = self.request.user
-        empleado._instancia_anterior = empleado_anterior
-        registrar_bitacora(
-            instancia=empleado,
-            accion='EDICIÓN',
-            usuario=self.request.user,
-            instancia_anterior=empleado_anterior
-        )
+
+        if 'activo' in serializer.validated_data and serializer.validated_data['activo'] != anterior_activo:
+            accion = 'ACTIVACIÓN' if serializer.validated_data['activo'] else 'INACTIVACIÓN'
+            registrar_bitacora(
+                instancia=empleado,
+                accion=accion,
+                usuario=self.request.user,
+                cambios={'activo': f'{anterior_activo} → {empleado.activo}'}
+            )
+        else:
+            registrar_bitacora(
+                instancia=empleado,
+                accion='EDICIÓN',
+                usuario=self.request.user,
+                instancia_anterior=instance
+            )
 
     def perform_destroy(self, instance):
-        # Validación de integridad referencial
         if instance.bitacoraempleado_set.exists():
             raise ValidationError("❌ No se puede eliminar: este empleado tiene historial ligado en la bitácora.")
 

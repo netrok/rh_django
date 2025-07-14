@@ -1,8 +1,8 @@
 from django.db import models
+from django.conf import settings  # ✅ para usar AUTH_USER_MODEL
+
 
 # === MODELO EMPLEADO ===
-
-
 class Empleado(models.Model):
     num_empleado = models.CharField(max_length=20, unique=True)
     nombres = models.CharField(max_length=100)
@@ -35,7 +35,7 @@ class BitacoraEmpleado(models.Model):
     ]
 
     empleado = models.ForeignKey(Empleado, on_delete=models.CASCADE)
-    usuario = models.ForeignKey('auth.User', on_delete=models.SET_NULL, null=True)  # ✅ sin get_user_model()
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     accion = models.CharField(max_length=20, choices=ACCIONES)
     fecha = models.DateTimeField(auto_now_add=True)
     detalles = models.TextField(blank=True)
@@ -46,7 +46,7 @@ class BitacoraEmpleado(models.Model):
 
 # === BITÁCORA GENERAL DEL SISTEMA ===
 class Bitacora(models.Model):
-    usuario = models.ForeignKey('auth.User', on_delete=models.SET_NULL, null=True)  # ✅ sin get_user_model()
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     modelo_afectado = models.CharField(max_length=100)
     objeto_id = models.PositiveIntegerField()
     accion = models.CharField(max_length=50)  # Ej: creado, actualizado, eliminado

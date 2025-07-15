@@ -4,16 +4,18 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import Empleado, Bitacora, BitacoraEmpleado
 
-
 # === SERIALIZER DE EMPLEADO ===
+
+
 class EmpleadoSerializer(serializers.ModelSerializer):
+    foto = serializers.ImageField(required=False, allow_null=True)  # ✅ Corrección aquí
+
     class Meta:
         model = Empleado
         fields = '__all__'
 
-    # 🔧 Corregido: copia segura del QueryDict
     def to_internal_value(self, data):
-        data = data.copy()  # ← Esto permite modificar el input
+        data = data.copy()
 
         if 'activo' in data and isinstance(data['activo'], str):
             data['activo'] = data['activo'].lower() in ['true', '1', 'yes']
@@ -78,12 +80,6 @@ class EmpleadoSerializer(serializers.ModelSerializer):
         if not re.fullmatch(r'^\d{10}$', value):
             raise serializers.ValidationError("El número de teléfono debe tener exactamente 10 dígitos.")
         return value
-
-    # Si agregas un campo `celular` al modelo, descomenta esto:
-    # def validate_celular(self, value):
-    #     if not re.fullmatch(r'^\d{10}$', value):
-    #         raise serializers.ValidationError("El número de celular debe tener exactamente 10 dígitos.")
-    #     return value
 
 
 # === SERIALIZER DE BITÁCORA GENERAL ===
